@@ -1,0 +1,101 @@
+# {{ ansible_managed }}
+
+path "secret/data/teams/dsi/{{ item }}/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "teams/*" {
+  capabilities = ["list"]
+}
+
+path "teams/data/dsi/{{ item }}/*" {
+  capabilities = ["create", "read", "update", "list"]
+}
+
+path "teams/metadata/dsi/{{ item }}/*" {
+  capabilities = ["create", "read", "update", "list"]
+}
+
+path "ssh_{{ item }}/*" {
+  capabilities = ["create", "read", "list", "update"]
+}
+
+path "ssh_{{ item }}/metadata/*" {
+  capabilities = ["create", "update", "read", "delete"]
+}
+
+path "ssh_{{ item }}/sign/*" {
+  capabilities = ["create", "update", "read", "delete"]
+}
+
+path "ssh_{{ item }}/data/*" {
+  capabilities =  ["create", "update", "read", "delete"]
+}
+
+{% if item == 'dsi_dev' or item == 'dsi_cdp' %}
+# dev_cdp secret
+path "teams/data/dsi/common/dev_cdp/*"
+{
+  capabilities = ["create", "read", "update", "list"]
+}
+{% endif %}
+
+{% if item == 'dsi_dev' or item == 'dsi_devops' %}
+# dev_devops secret
+path "teams/data/dsi/common/dev_devops/*"
+{
+  capabilities = ["create", "read", "update", "list"]
+}
+{% endif %}
+
+{% if item == 'dsi_hpc' or item == 'dsi_storage' %}
+# hpc_storage secret
+path "teams/data/dsi/common/hpc_storage/*"
+{
+  capabilities = ["create", "read", "update", "list"]
+}
+{% endif %}
+
+{% if item == 'dsi_mgmt' or item == 'dsi_cdp' %}
+# mgmt_cdp secret
+path "teams/data/dsi/common/mgmt_cdp/*"
+{
+  capabilities = ["create", "read", "update", "list"]
+}
+{% endif %}
+
+{% if item == 'dsi_network' or item == 'dsi_support' %}
+# network_support secret
+path "teams/data/dsi/common/network_support/*"
+{
+  capabilities = ["create", "read", "update", "list"]
+}
+{% endif %}
+
+{% if item == 'dsi_devops' or item == 'dsi_sysops' or item == 'dsi_ops' %}
+# ops secret
+path "teams/data/dsi/common/ops/*"
+{
+  capabilities = ["create", "read", "update", "list"]
+}
+{% endif %}
+
+{% if item == 'test_env' %}
+path "secrets/utilisateurs/mathieu.thouseau/gitLab/Terraform_infra/ssh_key"
+{
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+{% endif %}
+
+{% if item == 'vault_admin' %}
+# VAULT ADMIN
+path "*"
+{
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+
+path "teams/*"
+{
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+{% endif %}

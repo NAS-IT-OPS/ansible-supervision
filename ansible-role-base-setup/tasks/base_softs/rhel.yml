@@ -1,0 +1,26 @@
+---
+
+# EPEL repo is a prerequisite. So, do not put it on the loop base_setup_CentOS_packages
+- name : Ensure epel repo for RHEL is installed.
+  become: true
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "RedHat"
+
+# - name : Remove CentOS firewalld packages
+#   become: true
+#   yum:
+#     name: firewalld
+#     state: absent
+#   when: ansible_distribution == "CentOS"
+
+- name : Ensure RHEL based packages are installed.
+  become: true
+  yum:
+    name: "{{ base_setup_packages_rhel }}"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "RedHat"
+

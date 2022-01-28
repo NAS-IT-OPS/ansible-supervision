@@ -1,0 +1,119 @@
+####         ####
+#    SSH VAULT  #
+####         ####
+
+
+
+
+
+####         ####
+#    PACKAGES   #
+####         #### 
+
+# debian VM
+base_setup_packages_debian:
+  - lsb-release
+  - nfs-common
+  - fail2ban
+  - vim
+  - lshw
+  - tmux
+  - wget
+  - htop
+  - mlocate
+  - tcpdump
+  - unzip
+  - haveged
+  - gnupg
+  - mailutils # for command mail
+  - msmtp # to set smtp relay
+  - msmtp-mta # to set smtp relay
+
+# CentOS VM
+base_setup_packages_centos:
+  - epel-release
+  - fail2ban-server
+  - vim
+  - lshw
+  - tmux
+  - wget
+  - htop
+  - mlocate
+  - tcpdump
+  - unzip
+  - postfix
+  - haveged
+  - gnupg
+  - mailx # for mail command and smtp server
+
+# Red Hat VM
+base_setup_packages_rhel:
+  - redhat-lsb
+  - nfs-utils
+  - fail2ban-server
+  - vim
+  - lshw
+  - tmux
+  - wget
+  - htop
+  - mlocate
+  - tcpdump
+  - unzip
+  - haveged
+  - gnupg
+  - mailx # for mail command and smtp server
+
+####         ####
+#    UPDATE     #
+####         #### 
+
+
+# CentOS Auto Update
+
+update_mail_to: ami@icm-institute.org
+
+# If prefer to use system hostname, set yum_cron_system_name to None.
+yum_cron_system_name: "{{ inventory_hostname }}"
+yum_cron_emit_via: email
+yum_cron_output_width: 80
+yum_cron_email_from: "auto-update@{{ inventory_hostname }}"
+yum_cron_email_to: admins@icm-institute.org
+yum_cron_email_host: localhost # NEED FIX
+yum_cron_debug_level: -2
+
+# daily check
+yum_cron_daily_update_level: security
+yum_cron_daily_update_message: "no"
+yum_cron_daily_download_updates: "yes"
+yum_cron_daily_apply_updates: "yes"
+yum_cron_daily_random_sleep: 0
+#yum_cron_hourly_base_options: "{{ hourly_base_options }}"
+#yum_cron_hourly_base_options:
+# - "exclude=java*,kernel*"
+
+# weekly check
+yum_cron_weekly_update_level: default
+yum_cron_weekly_update_message: "yes"
+yum_cron_weekly_download_updates: "yes"
+yum_cron_weekly_apply_updates: "yes"
+yum_cron_weekly_random_sleep: 0
+
+# Clean
+yum_cron_clean_what: "all"
+yum_cron_clean_enabled: False
+yum_cron_clean_when: "weekly"
+#yum_cron_clean_when is what comes after /etc/cron. so /etc/cron.daily/ /etc/cron.monthly
+
+
+####         ####
+#    POSTFIX    #
+####         #### 
+
+
+postfix_config_file: /etc/postfix/main.cf
+
+postfix_service_state: started
+postfix_service_enabled: true
+
+postfix_inet_interfaces: localhost
+postfix_inet_protocols: all

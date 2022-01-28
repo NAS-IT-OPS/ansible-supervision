@@ -1,0 +1,19 @@
+# SSHD Debian
+- name: reload_ssh_service
+  systemd:
+    name: ssh
+    state: reloaded
+
+# SSHD CentOS
+- name: restart_Centos_sshd_service
+  systemd:
+    name: sshd
+    state: restarted
+
+# handlers for yum_cron
+- name: restart yum-cron
+  service: name=yum-cron state=restarted enabled=yes
+
+# Postfix Mail
+- name: restart postfix
+  service: name=postfix state=restarted

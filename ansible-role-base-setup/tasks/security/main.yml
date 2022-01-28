@@ -1,0 +1,9 @@
+---
+
+- include_tasks: common.yml
+
+# - include_tasks: redhat.yml
+#   when: ansible_distribution == "RedHat"
+
+# - include_tasks: centos.yml
+#   when: ansible_distribution == "CentOS"

@@ -1,0 +1,84 @@
+---
+
+- name: check if essential package is present (Debian)
+  become: true
+  apt:
+    name:
+      - curl
+      - wget
+      - net-tools
+      - unzip
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: check if essential package is present (CentOS & Amazon Linux)
+  become: true
+  yum:
+    name:
+      - curl
+      - wget
+      - net-tools
+      - unzip
+    state: present
+  when: ansible_distribution == "CentOS" or ansible_distribution == "Amazon"
+
+- name: "create node-exporter group {{ node_exporter_group }}"
+  group:
+    name: "{{ node_exporter_group }}"
+    state: present
+
+- name: "create node-exporter user {{ node_exporter_user }}"
+  user:
+    name: "{{ node_exporter_user }}"
+    shell: /sbin/nologin
+    state: present
+    group: "{{ node_exporter_group }}"
+    system: true
+    create_home: false
+    home: /
+
+- name: check if node-exporter exist
+  stat:
+    path: "{{ node_exporter_dir }}node_exporter"
+  register: __node_exporter_exist
+
+- name: download node exporter
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_group }}"
+  when: __node_exporter_exist.stat.exists == False
+
+- name: "move node-exporter in {{ node_exporter_dir }} (Debian)"
+  shell: "mv /tmp/node_exporter-*.linux-amd64/node_exporter {{ node_exporter_dir }}"
+  when: __node_exporter_exist.stat.exists == False
+
+- name: clean node exporter archive
+  file:
+    state: absent
+    path: "{{ item }}}"
+  with_fileglob:
+  - "/tmp/node_exporter-*"
+  changed_when: False
+
+- name: install systemd service for node exporter
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload_systemd
+
+- name: force systemd reload if needed
+  meta: flush_handlers
+
+- name: start node exporter
+  systemd:
+    name: node_exporter
+    state: started
+    enabled: yes
+    daemon_reload: yes
+

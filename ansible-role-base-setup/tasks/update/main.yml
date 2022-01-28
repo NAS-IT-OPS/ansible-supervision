@@ -1,0 +1,12 @@
+---
+# auto update
+
+# Debian
+- name: config auto update if debian
+  include: update/update_debian.yml
+  when: ansible_os_family == "Debian"
+
+# Centos  & Rhel
+- name: config auto update if CentOS
+  include: update/update_centos.yml
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"

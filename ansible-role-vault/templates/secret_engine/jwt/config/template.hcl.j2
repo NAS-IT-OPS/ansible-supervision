@@ -1,0 +1,18 @@
+{
+{% if 'default_role' in item %}
+ "default_role": "{{ item.default_role }}",
+{% endif %}
+{% if 'jwt_validation_pubkeys' in item %}
+ "jwt_validation_pubkeys": "{{ item.jwt_validation_pubkeys }}"
+{% endif %}
+{% if 'issuer' in item %}
+ "bound_issuer": "{{ item.issuer }}",
+{% endif %}
+{% if 'jwks_url' in item %}
+ "jwks_url" : "{{ item.jwks_url }}"
+{% endif %}
+{% if 'oidc_namespace' in item %}
+ "namespace_in_state": {{ item.oidc_namespace }} 
+{% endif %}
+}
+

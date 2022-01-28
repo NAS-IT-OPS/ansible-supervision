@@ -1,0 +1,6 @@
+---
+
+- name: set smtp conf for Debian
+  template:
+    src: mail_config/debian-msmtprc.j2
+    dest: "/etc/msmtprc"

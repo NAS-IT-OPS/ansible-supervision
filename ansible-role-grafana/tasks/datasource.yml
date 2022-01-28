@@ -1,0 +1,42 @@
+---
+
+- name: add prometheus datasource
+  grafana_datasource:
+    name: "prometheus-local"
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_user: "admin"
+    grafana_password: "{{ grafana_admin_password }}"
+    org_id: "1"
+    ds_type: "prometheus"
+    ds_url: "http://127.0.0.1:9090"
+
+- name: create datasource influxdb
+  grafana_datasource:
+    name: "{{ DS_INFLUXDB }}-{{ item }}"
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_user: "admin"
+    grafana_password: "{{ grafana_admin_password }}"
+    org_id: "1"
+    ds_type: "influxdb"
+    ds_url: "http://192.168.213.48:8086"
+    database: "telegraf_{{ item }}"
+    time_interval: ">10s"
+    basic_auth_user: "{{ influxdb_user }}"
+    basic_auth_password:  "{{ influxdb_password }}"
+  with_items:
+  - veeam
+  - switch
+
+- name: Create cloudwatch datasource
+  community.grafana.grafana_datasource:
+    name: "datasource-cloudwatch"
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_user: "admin"
+    grafana_password: "{{ grafana_admin_password }}"
+    org_id: "1"
+    ds_type: "cloudwatch"
+    ds_url: "http://monitoring.us-west-1.amazonaws.com"
+    aws_auth_type: "keys"
+    aws_default_region: "us-west-1"
+    aws_access_key: "{{ grafana_aws_access_key }}"
+    aws_secret_key: "{{ grafana_aws_secret_key }}"

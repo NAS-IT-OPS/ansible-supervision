@@ -1,0 +1,7 @@
+---
+ 
+# RHEL & CENTOS & DEBIAN
+- name: "Set the hostname {{ inventory_hostname }}"
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'

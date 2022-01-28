@@ -1,0 +1,15 @@
+---
+
+- name: add vault_authority to sshd config for sign ssh key
+  template:
+    src: common/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0600
+    validate: /usr/sbin/sshd -t -f %s
+    backup: yes
+  with_items: "{{ devops_groups }} and {{ dev_groups }} and {{ hpc_groups }} and {{ network_groups }} and {{ storage_groups }} and {{ ops_groups }} and {{ cdp_groups }} and {{ mgmt_groups }} and {{ support_groups }} and {{ sysops_groups }} and {{ staging_dev_groups }} and {{ staging_devops_groups }} and {{ staging_hpc_groups }} and {{ staging_cdp_groups }} and {{ staging_mgmt_groups }} and {{ staging_network_groups }} and {{ staging_ops_groups }} and {{ staging_storage_groups }} and {{ staging_support_groups }} and {{ staging_sysops_groups }}"
+  notify: reload_ssh_service
+  tags:
+  - ssh

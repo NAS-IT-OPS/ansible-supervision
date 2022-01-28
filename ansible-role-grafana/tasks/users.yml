@@ -1,0 +1,38 @@
+---
+
+- name: Create or update a Grafana Admin users
+  community.grafana.grafana_user:
+    url: "https://grafana.icm-institute.org"
+    url_username: "{{ vault_grafana_admin_user }}"
+    url_password: "{{{ vault_grafana_admin_password }}"
+    name: "{{ grafana_admin_users_name }}"
+    email: "{{ grafana_admin_users_email }}"
+    login: "{{ grafana_admin_users_login }}"
+    password: "{{ grafana_admin_users_password }}"
+    is_admin: true
+    state: present
+  with_items:
+        - grafana_users_admin
+  tags:
+    - grafana_user
+    - grafana_user_admin
+
+- name: Create or update a Grafana Read-Only users
+  community.grafana.grafana_user:
+    url: "https://grafana.icm-institute.org"
+    url_username: "{{ vault_grafana_admin_user }}"
+    url_password: "{{{ vault_grafana_admin_password }}"
+    name: "{{ grafana_rdy_users_name }}"
+    email: "{{ grafana_rdy_users_email }}"
+    login: "{{ grafana_rdy_users_login }}"
+    password: "{{ grafana_rdy_users_password }}"
+    is_admin: true
+    state: present
+  with_items:
+        - grafana_users_rdy
+  tags:
+    - grafana_user
+    - grafana_user_rdy
+
+- name: Flush handlers grafana users
+  meta: flush_handlers

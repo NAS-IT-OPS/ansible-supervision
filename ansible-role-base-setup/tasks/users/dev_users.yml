@@ -1,0 +1,43 @@
+---
+
+- name: include
+  include_vars: "{{ item }}"
+
+- name: add admin users on Debian Family servers
+  user:
+    name: "{{ dev_user }}"
+    group: "{{ dev_group }}"
+    append: yes
+    shell: /bin/bash
+    password: "{{ supassword | password_hash('sha512') }}"
+  register: result
+  changed_when: false
+  when: ansible_os_family == "Debian"
+
+- name: add admin users on CentOS servers
+  user:
+    name: "{{ dev_user }}"
+    group: "{{ dev_group }}"
+    append: yes
+    shell: /bin/bash
+    password: "{{ supassword | password_hash('sha512') }}"
+  register: result
+  changed_when: false
+  when: ansible_distribution == "CentOS"
+
+- name: insert bashrc
+  copy:
+    src: "users/dev/bashrc/bashrc-{{ dev_user }}.txt"
+    dest: "/home/{{ dev_user }}/.bashrc"
+    owner: "{{ dev_user }}"
+    group: "{{ dev_group }}"
+    mode: 0644
+
+- name: insert vimrc
+  template:
+    src: vimrc.j2
+    dest: "/home/{{ dev_user }}/.vimrc"
+    owner: "{{ dev_user }}"
+    group: "{{ dev_group }}"
+    mode: 0664
+

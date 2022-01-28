@@ -1,0 +1,15 @@
+---
+
+- include_tasks: debian.yml
+  when: ansible_distribution == "Debian"
+
+- include_tasks: centos.yml
+  when: ansible_distribution == "CentOS"
+
+# - include_tasks: rhel.yml
+#   host: rhel
+#   when: ansible_distribution == "RedHat"
+
+# VM Tools
+- include_tasks: vm_tools.yml
+  when: ansible_virtualization_type == "VMware"

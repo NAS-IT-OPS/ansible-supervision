@@ -1,0 +1,71 @@
+---
+
+# Ensure tmp dir exist on host
+- name: Creates directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop: "{{ vault_tmp_dirs }}"
+  delegate_to: vault01
+  tags:
+    - policy
+    - delete
+    - delete-policy
+    - secret-engine
+    - ssh
+    - aws
+    - delete-ssh
+    - delete-aws
+    - groups
+    - teams
+    - jwt
+    - delete-jwt
+
+# Vault policy related tasks
+- name: include Vault policy (playbook)
+  include_tasks: policy/main.yml
+  tags:
+    - policy
+    # FOR DELETE PURPOSE
+    - delete
+    - delete-policy
+    - jwt
+
+# Vault Groups/Teams related tasks
+- name: include Vault groups/teams (playbook)
+  include_tasks: groups/main.yml
+  tags:
+    - groups
+    - teams
+
+# Vault secret engine related tasks
+- name: include Vault secret engine (playbook)
+  include_tasks: secret_engine/main.yml
+  tags:
+    - secret-engine
+    - ssh
+    - aws
+    # FOR DELETE PURPOSE
+    - delete
+    - delete-ssh
+    - delete-aws
+    - jwt
+    - delete-jwt
+
+# Clean sensitive data from tmp dir
+- name: Delete ansible vault tmp directory
+  file:
+   state: absent
+   path: /tmp/vault
+  delegate_to: vault01
+  tags:
+    - policy
+    - delete
+    - delete-policy
+    - secret-engine
+    - ssh
+    - aws
+    - delete-ssh
+    - delete-aws
+    - groups
+    - teams

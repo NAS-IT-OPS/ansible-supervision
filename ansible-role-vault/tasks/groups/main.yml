@@ -1,0 +1,45 @@
+---
+# EXTERNAL GROUP (BASED ON AD GROUP)
+
+# CREATE GROUP ON VAULT
+ - name: Create vault identity groups
+   become: true
+   shell: "vault write identity/group name={{ item }} type=external"
+   loop: "{{ groups_name }}"
+   environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - groups
+    - teams
+
+# GROUP ALIAS FOR LDAP MAPPING
+# Get Group ID
+ - name: Get group ID for creating aliases (LDAP)
+   become: true
+   shell: "vault read /identity/group/name/{{ item }} -format=yaml > /tmp/vault/groups/{{ item }}.yaml"
+   loop: "{{ groups_name }}"
+   environment:
+    VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+    VAULT_TOKEN: "{{ vault_token }}"
+    VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - groups
+    - teams
+
+# LINK POLICY TO GROUPS
+ - name: Attach policy to vault group
+   become: true
+   shell: "vault write identity/group name={{ item }} policies={{ item }}"
+   loop: "{{ groups_name }}"
+   environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - groups
+    - teams

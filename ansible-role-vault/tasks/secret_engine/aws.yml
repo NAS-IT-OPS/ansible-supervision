@@ -1,0 +1,15 @@
+---
+ 
+ - name: Create all AWS secrets engine roles
+   become: true
+   shell:  vault write aws/roles/deploy \
+    role_arns=arn:aws:iam::{{ ACCOUNT-ID }}:role/{{ RoleNameToAssume }} \
+    credential_type=assumed_role
+   with_items: "{{ ACCOUNT-ID }}"
+   loop: "{{ RoleNameToAssume }}"
+   register: change-aws-secret-engine
+   changed_when: false
+   delegate_to: vault_cluster
+   tags:
+    - secret-engine 
+    - aws

@@ -1,0 +1,10 @@
+---
+# defaults file for grafana
+
+grafana_dir_configuration: "/etc/grafana"
+grafana_dir_datas: "/var/lib/grafana"
+grafana_admin_user: "{{ vault_grafana_admin_user }}"
+grafana_admin_password: "{{ vault_grafana_admin_password }}"
+influxdb_user: "telegraf"
+influxdb_password: "{{ vault_influxdb_admin_password }}"
+DS_INFLUXDB: "datasource-influxdb"

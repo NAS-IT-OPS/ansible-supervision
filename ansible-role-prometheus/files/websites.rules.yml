@@ -1,0 +1,17 @@
+groups:
+- name: alert.rules
+  rules:
+  - alert: SiteDown
+    expr: probe_success == 0
+    for: 30s
+    labels:
+      severity: "critical"
+    annotations:
+      url: "{{ $labels.site }}"
+      description: |
+        {{ $labels.site }} of job {{ $labels.job }} has been down for more than 30s
+        Site : https://{{ $labels.site }}
+        Grafana : http://192.168.213.48:3000/d/l6XlPTDMk/websites-monitoring?orgId=1
+      summary: "Site {{ $labels.site }} down"
+      grafana: "http://192.168.213.48:3000/d/l6XlPTDMk/websites-monitoring?orgId=1"
+      documentation: "https://docs.google.com/document/d/13_iJ1Y4Ljq2B2C2T-gUVWQGAGvXj7MZW7MnLlwrWtDE/edit?usp=sharing"

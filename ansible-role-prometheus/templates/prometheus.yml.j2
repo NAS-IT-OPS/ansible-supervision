@@ -1,0 +1,135 @@
+#jinja2: lstrip_blocks: "True"
+{{ prometheus_var_config | to_nice_yaml(indent=2) }}
+{% if prometheus_node_exporter_group %}
+- job_name: node_exporter
+  scrape_interval: 5m
+  static_configs:
+  - targets:
+{% for srv in groups[prometheus_node_exporter_group] %}
+    - {{ srv }}:9100
+{% endfor %}
+  metric_relabel_configs:
+  - source_labels: [ __name__ ]
+    regex: '(node_load.*|node_cpu_seconds_total|node_memory_.*|node_filesystem.*|node_time_seconds|node_boot_time_seconds|node_network_.*|node_disk_.*|node_procs_blocked|node_procs_blocked|node_procs_blocked|process_open_fds|node_power_supply_online|node_scrape_collector_duration_seconds)'
+    action: keep
+{% endif %}
+
+{% if prometheus_windows_exporter_group %}
+- job_name: windows_exporter
+  scrape_interval: 1m
+  static_configs:
+  - targets:
+{% for srv in groups[prometheus_windows_exporter_group] %}
+    - {{ srv }}:9182
+{% endfor %}
+{% endif %}
+
+{% if prometheus_cadvisor_group %}
+- job_name: cadvisor
+  scrape_interval: 5m
+  static_configs:
+  - targets:
+{% for srv in groups[prometheus_cadvisor_group] %}
+    - {{ srv }}:9101
+{% endfor %}
+{% endif %}
+  metric_relabel_configs:
+  - source_labels: [ __name__ ]
+    regex: 'go_.*'
+    action: drop
+
+{% if prometheus_traefik_active == true %}
+- job_name: traefik
+  scrape_interval: 1m
+  static_configs:
+  - targets:
+{% for srv in groups[prometheus_traefik_group] %}
+    - {{ srv }}:8081
+{% endfor %}
+{% endif %}
+
+{% if prometheus_blackbox_sites_http %}
+- job_name: blackbox_http
+  scrape_interval: 60s
+  metrics_path: /probe
+  params:
+    module: [http_2xx]
+  static_configs:
+    - targets:
+{% for site in prometheus_blackbox_sites_http %}
+      - {{ site.domain }}
+{% endfor %}
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: site
+    - target_label: __address__
+      replacement: {{ ansible_hostname }}:9115 # Blackbox exporter
+{% endif %}
+
+{% if prometheus_blackbox_smtp %}
+- job_name: blackbox_smtp
+  scrape_interval: 60s
+  metrics_path: /probe
+  params:
+    module: [smtp_check]
+  static_configs:
+    - targets:
+      - {{ prometheus_blackbox_smtp }}
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: target
+    - target_label: __address__
+      replacement: {{ ansible_hostname }}:9115 # Blackbox exporter
+{% endif %}
+
+{% if prometheus_blackbox_sites_https %}
+- job_name: blackbox_https
+  scrape_interval: 60s
+  metrics_path: /probe
+  params:
+    module: [https_2xx]
+  static_configs:
+    - targets:
+{% for site in prometheus_blackbox_sites_https %}
+      - https://{{ site.domain }}
+{% endfor %}
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: site
+    - target_label: __address__
+      replacement: {{ ansible_hostname }}:9115 # Blackbox exporter
+{% endif %}
+
+{% if prometheus_domainexporter_active == true %}
+- job_name: domainexporter
+  metrics_path: /probe
+  static_configs:
+    - targets:
+{% for site in prometheus_domainexporter_sites %}
+      - {{ site.domain }}
+{% endfor %}
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: domain
+    - target_label: __address__
+      replacement: domainexporter:9222
+{% endif %}
+{% if prometheus_alermanager_active == true %}
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:9093
+rule_files:
+  - {{ prometheus_dir_configuration }}/rules/*.rules.yml
+{% endif %}
+
+

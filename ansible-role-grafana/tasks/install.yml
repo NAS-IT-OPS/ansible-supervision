@@ -1,0 +1,45 @@
+---
+# tasks file for grafana monitoring
+
+- name: Add repository
+  yum_repository:
+    name: grafana
+    description: Grafana main repo
+    baseurl: http://nexus01.icm-institute.org/repo/grafana/
+    state: present
+
+- name: grafana install 
+  yum:
+    name: grafana
+    state: present
+    #update_cache: yes
+    #cache_valid_time: 3600
+
+- name: start service grafana-server
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+  notify: restart_grafana
+
+- name: create grafana.ini file
+  template:
+    src: grafana.ini.j2
+    dest: "{{ grafana_dir_configuration }}/grafana.ini"
+    mode: 0755
+    owner: grafana
+    group: grafana
+  notify: restart_grafana
+
+- name: force handlers install - config (if needed)
+  meta: flush_handlers
+
+- name: wait for service up
+  uri:
+    url: "http://127.0.0.1:3000"
+    status_code: "200"
+  register: result
+  until: result.status == 200
+  retries: 120
+  delay: 1
+

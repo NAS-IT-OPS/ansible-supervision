@@ -1,0 +1,6 @@
+---
+
+- name: set smtp conf for CentOS
+  template:
+    src: mail_config/centos-mail.rc.j2
+    dest: "/etc/mail.rc"

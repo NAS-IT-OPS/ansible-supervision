@@ -1,0 +1,40 @@
+---
+
+- name: Install websites dashboard file
+  copy:
+    src: "{{ item }}"
+    dest: /var/lib/grafana/
+    mode: 0755
+  notify: restart_grafana 
+  with_items:
+  - "dashboard-checks-urls.json"
+  - "dashboard-traefik.json"
+  - "dashboard-system.json"
+  - "dashboard-win_system.json"
+  - "dashboard-infra-diagram.json"
+  - "dashboard-veeam-br.json"
+  - "dashboard-windows-node.json"
+  - "dashboard-dc.json"
+  - "dashboard-switch.json"
+  - "dashboard-ecs.json"
+
+- name: create dashboard file  yaml
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/grafana/provisioning/dashboards/{{ item }}"
+    mode: 0755
+  notify: restart_grafana
+  with_items:
+  - "dashboard-checks-urls.yml"
+  - "dashboard-traefik.yml"
+  - "dashboard-system.yml"
+  - "dashboard-win_system.yml"
+  - "dashboard-infra-diagram.yml"
+  - "dashboard-veeam-br.yml"
+  - "dashboard-windows-node.yml"
+  - "dashboard-dc.yml"
+  - "dashboard-switch.yml"
+  - "dashboard-ecs.yml"
+
+- name: Flush handlers grafana dashboards
+  meta: flush_handlers

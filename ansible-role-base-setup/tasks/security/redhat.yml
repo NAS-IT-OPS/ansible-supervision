@@ -1,0 +1,13 @@
+--- 
+
+- name: insert rhel-security-check.sh
+  template:
+    src: security/rhel-security-check.sh
+    dest: "/root/rhel-security-check.sh"
+
+- name: Ensure job is existing
+  ansible.builtin.cron:
+    name: "security check"
+    minute: "0"
+    hour: "8,0"
+    job: "/root/rhel-security-check.sh > /dev/null" 

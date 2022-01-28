@@ -1,0 +1,15 @@
+---
+
+- name: config smtp client & mail aliases for host (if Debian)
+  include: mail_config/smtp-client-debian.yml
+  when: ansible_os_family == "Debian" and inventory_hostname != "SRVOVHDOCKER01"
+  tags:
+    - mail
+    - smtp
+
+- name: config smtp client & mail aliases for host (if CentOS)
+  include: mail_config/smtp-client-centos.yml
+  when: ansible_distribution == "CentOS" and inventory_hostname != "SRVOVHDOCKER01"
+  tags:
+    - mail
+    - smtp

@@ -1,0 +1,21 @@
+- name: Ensure fail2ban systemd service is enabled and started.
+  systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+
+- name: Change sudo session timeout
+  lineinfile:
+    dest: /etc/sudoers.d/sudoers_log
+    line: '{{ item }}'
+    create: yes
+    owner: root 
+    group: root 
+    mode: "0440"
+    state: present
+    validate: 'visudo -c -f %s'
+  with_items:
+  - "Defaults	logfile=/var/log/sudo.log"
+  - "Defaults	lecture=always"
+  - "Defaults	passwd_tries=10"
+  - "Defaults	log_input,log_output"

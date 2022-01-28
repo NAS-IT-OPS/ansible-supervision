@@ -1,0 +1,7 @@
+# JWT TEMPLATE
+{% for item in jwt_policy_name  %}
+path "{{ item.policy_path }}"
+{
+  capabilities = {{ item.capabilities }}
+}
+{% endfor %}

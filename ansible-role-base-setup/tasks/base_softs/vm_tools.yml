@@ -1,0 +1,34 @@
+---
+
+# CentOS & RHEL
+- name : Ensure CentOS vmware packages are installed.
+  become: true
+  yum:
+    name: open-vm-tools
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Ensure open-vm-tools service is enabled and started if Centos.
+  service:
+    name: vmtoolsd
+    enabled: true
+    state: started
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+# Debian
+- name : Ensure Debian vmware packages are installed.
+  become: true
+  apt:
+    name: open-vm-tools
+    state: present
+    cache_valid_time: 3600
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensure open-vm-tools service is enabled and started if Debian.
+  service:
+    name: open-vm-tools
+    enabled: true
+    state: started
+  when: ansible_os_family == "Debian"

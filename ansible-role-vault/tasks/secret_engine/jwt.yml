@@ -1,0 +1,68 @@
+# JWT ENGINE ROLE CONFIG
+
+- name: Ensure all jwt config template are rendered
+  become: true
+  template:
+    src: "secret_engine/jwt/config/template.hcl.j2"
+    dest: "/tmp/vault/jwt_engine/config/{{ item.name }}.hcl"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ jwt_engine }}"
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - jwt
+
+- name: Ensure all jwt config is correctly configured
+  shell: "cat /tmp/vault/jwt_engine/config/{{ item.name }}.hcl | vault write auth/{{ item.name }}/config -"
+  environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"  
+  loop: "{{ jwt_engine }}"
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - jwt
+
+- name: Delete all managed jwt role
+  shell: "vault secrets disable {{ item.name }}"
+  loop: "{{ jwt_role }}"
+  environment:
+    VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+    VAULT_TOKEN: "{{ vault_token }}"
+    VAULT_ADDR: "{{ vault_addr }}"
+  delegate_to: vault01
+  tags:
+    - delete
+    - delete-jwt
+    - secret-engine
+    - jwt
+
+- name: Ensure all jwt roles template are rendered
+  become: true
+  template:
+    src: "secret_engine/jwt/roles/template.hcl.j2"
+    dest: "/tmp/vault/jwt_engine/roles/{{ item.name }}.hcl"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ jwt_role }}"
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - jwt
+
+- name : Create all jwt roles
+  become: true
+  shell: "cat /tmp/vault/jwt_engine/roles/{{ item.name }}.hcl | vault write auth/jwt-local/role/{{ item.name }} -"
+  loop: "{{ jwt_role }}"
+  environment:
+    VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+    VAULT_TOKEN: "{{ vault_token }}"
+    VAULT_ADDR: "{{ vault_addr }}"  
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - jwt

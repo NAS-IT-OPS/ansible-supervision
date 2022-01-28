@@ -1,0 +1,63 @@
+---
+# tasks for yum_cron (CentOS & RHEL)
+
+- name: Ensures cron(ie) installed
+  yum: 
+    name: cronie 
+    state: present
+  tags: 
+    - yum-cron
+    - common
+
+- name: Ensures cron(ie) service is running
+  service: 
+    name: crond
+    state: started
+    enabled: yes
+  tags: 
+    - yum-cron
+    - common
+
+- name: Ensures yum-cron installed
+  yum: 
+    name: yum-cron 
+    state: present
+  tags: yum-cron
+
+- name: Configure yum-cron.conf (daily)
+  template: 
+    src: update/centos/yum-cron.conf.j2 
+    dest: /etc/yum/yum-cron.conf
+  notify: restart yum-cron
+  tags: yum-cron
+
+- name: Configure yum-cron.conf (weekly)
+  template: 
+    src: update/centos/yum-cron-weekly.conf.j2 
+    dest: /etc/yum/yum-cron-hourly.conf
+  notify: restart yum-cron
+  tags: yum-cron
+
+- name: Ensures yum-cron service is running
+  service: 
+    name: yum-cron 
+    state: started 
+    enabled: yes
+  tags: yum-cron
+
+- name: Configure yum-cron-clean to run a yum clean regularly
+  template:
+    src: update/centos/yum_clean_cron.j2
+    dest: /etc/cron.{{ yum_cron_clean_when }}/yum_clean_cron
+    mode: 0755
+  when: yum_cron_clean_enabled|bool == true
+  tags: yum-cron
+
+- name: Remove the yum-cron-clean files if disabled
+  file:
+    path: /etc/cron.{{ item }}/yum_clean_cron
+    state: absent
+  with_items:
+    - weekly
+  when: yum_cron_clean_enabled|bool == false
+  tags: yum-cron

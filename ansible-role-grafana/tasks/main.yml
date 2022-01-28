@@ -1,0 +1,33 @@
+---
+
+# Grafana Install
+- name: Install Grafana - Deploy Grafana Config (playbook)
+  include: install.yml
+  tags:
+  - grafana_install
+
+# Grafana Users
+- name: Add/Update Grafana Users (playbook)
+  include_tasks: users.yml
+  tags:
+  - grafana_user
+  - grafana_user_admin
+  - grafana_user_rdy
+
+# Grafana Plugins
+- name: Add Grafana Plugins (playbook)
+  include_tasks: plugins.yml
+  tags:
+  - grafana_plugins
+
+# Grafana Datasource
+- name: Add/Update Grafana Datasource (playbook)
+  include_tasks: datasource.yml
+  tags:
+  - grafana_datasource
+
+# Grafana Dashboards
+- name: Add/Update Grafana Dashboards (playbook)
+  include_tasks: dashboards.yml
+  tags:
+  - grafana_dashboards

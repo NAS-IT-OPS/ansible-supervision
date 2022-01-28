@@ -1,0 +1,76 @@
+---
+
+# Hostname
+- name: Set hostname
+  include: base_scripts/hostname.yml
+  tags:
+  - hostname
+
+- name: set timezone to Europe/Paris
+  timezone:
+    name: Europe/Paris
+
+# Admin user and admin group
+- name: Get ICM admin user & group
+  include: users/admin_icm.yml
+  tags:
+  - users
+  - admin
+
+# Add Admin Users
+- name: Add all admin users
+  include_tasks: users/admin_users.yml
+  tags:
+  - users
+  - admin
+
+# Add Dev Users
+- name: Add all dev user - Add dev group
+  include: users/dev_users.yml
+  tags:
+  - users
+  - dev
+
+# SSHD config
+- name: Get ssh_keys production
+  include: sshd_config/ssh-production.yml
+  tags:
+  - users
+  - ssh
+
+- name: Get ssh_keys staging
+  include: sshd_config/ssh-staging.yml
+  tags:
+  - users
+  - ssh
+
+- name: Set sshd config
+  include: sshd_config/sshd.yml
+  tags:
+  - users
+  - ssh
+
+# Base soft
+- name: Add packages
+  include: base_softs/main.yml
+  tags:
+  - softs
+
+# Auto update
+- name: add auto update scripts
+  include: update/main.yml
+  tags:
+  - update
+
+# Security layer
+- name: Include security tasks
+  include: security/main.yml
+  tags:
+  - security
+
+# Mail config & Mail aliases
+# - name: config postfix & mail aliases
+#   include: mail_config/main.yml
+#   tags:
+#   - mail
+#   - update

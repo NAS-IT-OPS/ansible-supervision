@@ -1,0 +1,6 @@
+---
+
+# - name: remove temporarily
+#   apt:
+#     name: snmp,snmpd
+#     state: absent

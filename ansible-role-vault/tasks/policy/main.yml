@@ -1,0 +1,88 @@
+---
+
+# DELETE ALL MANAGED POLOCY  (ONLY AUTO POLICY)
+ - name: Delete all managed vault common policy
+   become: true
+   shell: "vault policy delete {{ item }}" # vault policy delete 
+   loop: "{{ policy_name }}"
+   environment:
+     # GET FACT FOR LOGIN PUPOSE FROM LOGIN
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - policy
+    - delete
+    - delete-policy
+
+ - name: Delete all managed vault jwt policy
+   become: true
+   shell: "vault policy delete {{ item.name }}" # vault policy delete 
+   loop: "{{ jwt_policy_name }}"
+   environment:
+     # GET FACT FOR LOGIN PUPOSE FROM LOGIN
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - policy
+    - delete
+    - delete-policy
+    - jwt
+
+# ADD ALL TEMPLATE ON VAULT01
+ - name: Ensure all common policy templates are rendered
+   become: true
+   template:
+    src: policy/template.hcl.j2
+    dest: "/tmp/vault/policy/{{ item }}.hcl"
+    owner: root
+    group: root
+    mode: 0644
+   loop: "{{ policy_name }}"
+   delegate_to: vault01
+   tags:
+    - policy
+    - common
+
+ - name: Ensure all jwt policy templates are rendered
+   become: true
+   template:
+    src: policy/template_jwt.hcl.j2
+    dest: "/tmp/vault/policy/{{ item.name }}.hcl"
+    owner: root
+    group: root
+    mode: 0644
+   loop: "{{ jwt_policy_name }}"
+   delegate_to: vault01
+   tags:
+    - policy
+    - jwt
+
+# DEPLOY ALL POLICY FROM VAULT01
+ - name: Deploy all vault common policy
+   become: true
+   shell:  "vault policy write {{ item }} /tmp/vault/policy/{{ item | quote }}.hcl"
+   loop: "{{ policy_name }}"
+   environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - policy
+
+ - name: Deploy all vault jwt policy
+   become: true
+   shell:  "vault policy write {{ item.name }} /tmp/vault/policy/{{ item.name | quote }}.hcl"
+   loop: "{{ jwt_policy_name }}"
+   environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+   delegate_to: vault01
+   tags:
+    - policy
+    - jwt

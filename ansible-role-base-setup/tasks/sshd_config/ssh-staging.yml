@@ -1,0 +1,121 @@
+---
+
+- name: get vault public key on host in staging dev groups 
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_dev.pem
+    dest: /etc/ssh/ssh_staging_dsi_dev.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_dev_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in staging devops groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_devops.pem
+    dest: /etc/ssh/ssh_staging_dsi_devops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_devops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in staging cdp groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_cdp.pem
+    dest: /etc/ssh/ssh_staging_dsi_cdp.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_cdp_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in staging hpc groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_hpc.pem
+    dest: /etc/ssh/ssh_staging_dsi_hpc.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_hpc_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in staging network groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_network.pem
+    dest: /etc/ssh/ssh_staging_dsi_network.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_network_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in staging ops groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_ops.pem
+    dest: /etc/ssh/ssh_staging_dsi_ops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_ops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in staging storage groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_storage.pem
+    dest: /etc/ssh/ssh_staging_dsi_storage.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_storage_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in staging mgmt groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_mgmt.pem
+    dest: /etc/ssh/ssh_staging_dsi_mgmt.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_mgmt_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in staging sysops groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_sysops.pem
+    dest: /etc/ssh/ssh_staging_dsi_sysops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_sysops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in staging support groups
+  copy:
+    src: common/ssh_key/ssh_staging_dsi_support.pem
+    dest: /etc/ssh/ssh_staging_dsi_support.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ staging_support_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh

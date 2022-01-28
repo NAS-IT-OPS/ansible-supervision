@@ -1,0 +1,121 @@
+---
+
+- name: get vault public key on host in dev groups
+  copy:
+    src: common/ssh_key/ssh_dsi_dev.pem
+    dest: /etc/ssh/ssh_dsi_dev.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ dev_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh  
+
+- name: get vault public key on host in devops groups
+  copy:
+    src: common/ssh_key/ssh_dsi_devops.pem
+    dest: /etc/ssh/ssh_dsi_devops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ devops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in cdp groups
+  copy:
+    src: common/ssh_key/ssh_dsi_cdp.pem
+    dest: /etc/ssh/ssh_dsi_cdp.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ cdp_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in hpc groups
+  copy:
+    src: common/ssh_key/ssh_dsi_hpc.pem
+    dest: /etc/ssh/ssh_dsi_hpc.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ hpc_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in network groups
+  copy:
+    src: common/ssh_key/ssh_dsi_network.pem
+    dest: /etc/ssh/ssh_dsi_network.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ network_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh 
+
+- name: get vault public key on host in ops groups
+  copy:
+    src: common/ssh_key/ssh_dsi_ops.pem
+    dest: /etc/ssh/ssh_ dsi_ops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ ops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in mgmt groups
+  copy:
+    src: common/ssh_key/ssh_dsi_mgmt.pem
+    dest: /etc/ssh/ssh_ dsi_mgmt.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ mgmt_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in storage groups
+  copy:
+    src: common/ssh_key/ssh_dsi_storage.pem
+    dest: /etc/ssh/ssh_dsi_storage.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ storage_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in sysops groups
+  copy:
+    src: common/ssh_key/ssh_dsi_sysops.pem
+    dest: /etc/ssh/ssh_dsi_sysops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ sysops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh
+
+- name: get vault public key on host in support groups
+  copy:
+    src: common/ssh_key/ssh_dsi_sysops.pem
+    dest: /etc/ssh/ssh_dsi_sysops.pem
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ sysops_groups }}"
+  when: "item in group_names"
+  tags:
+  - ssh

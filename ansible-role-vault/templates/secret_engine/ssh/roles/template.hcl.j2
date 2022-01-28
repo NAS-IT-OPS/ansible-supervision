@@ -1,0 +1,17 @@
+{
+  "allow_user_certificates": {{ ssh_allow_user_certificates }}, 
+  "allowed_users": "{{ ssh_allowed_users }}",
+  "allowed_extensions": "{{ ssh_allowed_extensions }}",
+  "default_extensions": [
+    {
+      "permit-pty": ""
+    }
+  ],
+  "key_type": "{{ ssh_key_type }}",
+  {% if 'ssh_dsi_devops' in item %}
+  "default_user": "{{ ssh_devops_default_user }}",
+  {% else %}
+  "default_user": "{{ ssh_default_user }}",
+  {% endif %}
+  "ttl": "{{ ssh_ttl }}"
+}

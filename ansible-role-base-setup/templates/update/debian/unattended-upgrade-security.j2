@@ -1,0 +1,20 @@
+// {{ ansible_managed }}
+
+// Unattended-Upgrade::Origins-Pattern controls which packages are
+// upgraded.
+Unattended-Upgrade::Origins-Pattern {
+{% if unattended_origins_patterns_security is defined %}
+  {% for origin in unattended_origins_patterns_security %}
+    "{{ origin }}";
+  {% endfor %}
+{% else %}
+  {% for origin in __unattended_origins_patterns_security %}
+   "{{ origin }}";
+  {% endfor %}
+{% endif %}
+};
+
+Unattended-Upgrade::Mail "dsi-exploitaion@btp-consultants.fr";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+Unattended-Upgrade::Remove-Unused-Dependencies;

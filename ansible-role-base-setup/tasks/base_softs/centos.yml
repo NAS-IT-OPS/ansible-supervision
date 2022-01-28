@@ -1,0 +1,25 @@
+# FIRST WE NEED TO CHECK EPEL 6 & 7 HERE
+
+# EPEL repo is a prerequisite. So, do not put it on the loop base_setup_CentOS_packages
+- name : Ensure epel repo for CentOS is installed.
+  become: true
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS"
+
+# - name : Remove CentOS firewalld packages
+#   become: true
+#   yum:
+#     name: firewalld
+#     state: absent
+#   when: ansible_distribution == "CentOS"
+
+- name : Ensure CentOS based packages are installed.
+  become: true
+  yum:
+    name: "{{ base_setup_packages_centos }}"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS"

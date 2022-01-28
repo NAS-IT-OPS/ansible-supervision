@@ -1,0 +1,10 @@
+---
+
+- name : Ensure security packages are installed (debian).
+  become: true
+  apt:
+    cache_valid_time: 3600
+    name: "{{ base_setup_packages_debian }}"
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"

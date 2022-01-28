@@ -1,0 +1,6 @@
+---
+__unattended_origins_patterns_security:
+  - 'origin=Ubuntu,archive=${distro_codename}-security,label=Ubuntu-Security'
+
+__unattended_origins_patterns:
+  - 'origin=Ubuntu,archive=${distro_codename}-security,label=Ubuntu'

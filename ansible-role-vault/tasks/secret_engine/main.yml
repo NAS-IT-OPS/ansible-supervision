@@ -1,0 +1,32 @@
+---
+
+# SSH Vault engine
+- name: include SSH Vault engine (playbook)
+  include_tasks: ssh.yml
+  tags:
+    - secret-engine
+    - ssh
+    # FOR DELETE PURPOSE
+    - delete
+    - delete-ssh
+
+# JWT Engine
+- name: include JWT engine (playbook)
+  include_tasks: jwt.yml
+  tags:
+    - secret-engine
+    - jwt
+    # FOR DELETE PURPOSE
+    - delete
+    - delete-jwt
+    - jwt
+
+# AWS secret engine (jwt assume role aws)
+#- name: include AWS Secret Engine (playbook)
+#  include_tasks: aws.yml
+#  tags:
+#    - secret-engine 
+#    - aws
+    # FOR DELETE PURPOSE
+#    - delete
+#    - delete-aws

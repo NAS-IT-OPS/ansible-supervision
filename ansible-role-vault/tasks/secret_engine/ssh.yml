@@ -1,0 +1,85 @@
+---
+
+# SSH ENGINE CONFIG
+- name: Delete all managed vault ssh engine
+  shell: "vault secrets disable {{ item }}"
+  loop: "{{ ssh_engine_name }}"
+  environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+  delegate_to: vault01
+  tags:
+    - delete
+    - delete-ssh
+    - secret-engine
+    - ssh
+ 
+- name: Create vault ssh engine
+  shell: "vault secrets enable -path={{ item }} ssh"
+  loop: "{{ ssh_engine_name }}"
+  environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"  
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - ssh
+
+# SSH ENGINE KEY
+- name: Ensure all ssh keys are present
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: "/tmp/vault/ssh_engine/ssh_keys/"
+    owner: root
+    group: root
+    mode: 0644
+  with_fileglob:
+    - "roles/role-vault/files/secret_engine/ssh/ssh_keys/*"
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - ssh
+
+- name: Get ssh_key for ssh engine
+  become: true
+  shell: "vault write {{ item}}/config/ca     private_key=@/tmp/vault/ssh_engine/ssh_keys/{{ item }}.pem     public_key=@/tmp/vault/ssh_engine/ssh_keys/{{item}}.pub" 
+  loop: "{{ ssh_engine_name }}"
+  environment:
+     VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+     VAULT_TOKEN: "{{ vault_token }}"
+     VAULT_ADDR: "{{ vault_addr }}"
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - ssh
+
+# SSH ENGINE ROLE
+- name: Ensure all ssh roles templates are rendered
+  become: true
+  template:
+    src: secret_engine/ssh/roles/template.hcl.j2
+    dest: "/tmp/vault/ssh_engine/roles/{{ item }}.hcl"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ ssh_engine_name }}"
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - ssh
+
+- name : Create vault ssh engine roles
+  become: true
+  shell: "cat /tmp/vault/ssh_engine/roles/{{ item }}.hcl | vault write {{ item }}/roles/ssh -"
+  loop: "{{ ssh_engine_name }}"
+  environment:
+    VAULT_SKIP_VERIFY: "{{ vault_skip_verify }}"
+    VAULT_TOKEN: "{{ vault_token }}"
+    VAULT_ADDR: "{{ vault_addr }}"  
+  delegate_to: vault01
+  tags:
+    - secret-engine
+    - ssh
