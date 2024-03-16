@@ -1,0 +1,12 @@
+*.DS_STORE
+*.tfstate
+*.backup
+.terraform
+terraform.d/*
+files/*
+rendered/*
+*.swp
+terraform.tf
+plan.out
+.idea
+key.pem
