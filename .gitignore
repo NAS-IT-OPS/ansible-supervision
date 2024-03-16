@@ -10,3 +10,4 @@ terraform.tf
 plan.out
 .idea
 key.pem
+* workspace.code-workspace
